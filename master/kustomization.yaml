@@ -1,0 +1,11 @@
+# Adds namespace to all resources.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ecosia-master
+
+resources:
+- web/config-map.yaml
+- web/deployment.yaml
+- web/service.yaml
+- ingress.yaml
+- web/namespace.yaml

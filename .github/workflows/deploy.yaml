@@ -1,0 +1,33 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+    - master
+
+env:
+  GIT_SHA: ${{ github.sha }}
+  GIT_REF: ${{ github.ref }}
+  GIT_PAT: ${{ secrets.GIT_PAT }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout the repository
+      uses: actions/checkout@main
+
+    - name: Set Kubeconfig
+      uses: Azure/k8s-set-context@v1
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+
+    - name: Apply Deployment Configuration
+      run: |
+        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+        ./kustomize build . | kubectl apply -f -

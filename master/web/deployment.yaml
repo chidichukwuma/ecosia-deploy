@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: 265311748595.dkr.ecr.us-east-2.amazonaws.com/ecosia:latest
+        envFrom:
+          - configMapRef:
+              name: web-config-map
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "4000Mi"
+            cpu: "4000m"
+          limits:
+            memory: "8000Mi"
+            cpu: "8000m"
