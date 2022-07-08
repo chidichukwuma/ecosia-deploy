@@ -60,12 +60,18 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Create kubeconfig
-      run: |
-        mkdir ${HOME}/.kube
-        echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
-        echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
-        cat ${HOME}/.kube/config
+    # - name: Create kubeconfig
+    #   run: |
+    #     mkdir ${HOME}/.kube
+    #     echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
+    #     echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
+    #     cat ${HOME}/.kube/config
+    - name: Setup KUBECONFIG
+      uses: vbem/kubeconfig4sa@v1
+      with:
+        server:     $SERVER:6443
+        ca-base64:  ${{ secrets.K8S_CA_BASE64 }}
+        token:      ${{ secrets.K8S_SA_TOKEN }}
        
 
     - name: Deploy to K8s
