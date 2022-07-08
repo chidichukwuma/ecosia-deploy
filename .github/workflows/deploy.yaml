@@ -64,9 +64,8 @@ jobs:
         mkdir ${HOME}/.kube
         echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
         cat ${HOME}/.kube/config
+        kubectl config use-context 3line-main
 
-    - name: Use context
-      run: kubectl config use-context 3line-main
     - name: Deploy to K8s
       run: |
        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
