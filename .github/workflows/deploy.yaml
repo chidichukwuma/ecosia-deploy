@@ -64,7 +64,7 @@ jobs:
         mkdir ${HOME}/.kube
         echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
         cat ${HOME}/.kube/config
-        kubectl config use-context 3line-main
+        kubectl config use-context devops@3line-main.us-east-2.eksctl.io
 
     - name: Deploy to K8s
       run: |
