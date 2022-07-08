@@ -69,7 +69,7 @@ jobs:
     - name: Setup KUBECONFIG
       uses: vbem/kubeconfig4sa@v1
       with:
-        server:     $SERVER:6443
+        server:     $SERVER
         ca-base64:  ${{ secrets.K8S_CA_BASE64 }}
         token:      ${{ secrets.K8S_SA_TOKEN }}
        
