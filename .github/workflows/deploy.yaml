@@ -71,4 +71,5 @@ jobs:
       run: |
        export KUBECONFIG=kubeconfig.yaml
        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-       ./kustomize build . | kubectl apply -f -
+       ./kustomize build master | kubectl apply -f -
+       
