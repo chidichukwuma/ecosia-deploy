@@ -62,11 +62,13 @@ jobs:
     - name: Create kubeconfig
       run: |
         mkdir ${HOME}/.kube
+        echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
         echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
         cat ${HOME}/.kube/config
-        kubectl config use-context devops@3line-main.us-east-2.eksctl.io
+       
 
     - name: Deploy to K8s
       run: |
+       export KUBECONFIG=kubeconfig.yaml
        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
        ./kustomize build . | kubectl apply -f -
