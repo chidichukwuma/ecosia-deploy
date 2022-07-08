@@ -1,33 +1,67 @@
-name: Deployment
+# name: Deployment
+
+# on:
+#   push:
+#     branches:
+#     - master
+
+# env:
+#   GIT_SHA: ${{ github.sha }}
+#   GIT_REF: ${{ github.ref }}
+#   GIT_PAT: ${{ secrets.GIT_PAT }}
+#   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+# jobs:
+
+#   deploy:
+#     name: Deploy
+#     runs-on: ubuntu-latest
+#     steps:
+
+#     - name: Checkout the repository
+#       uses: actions/checkout@main
+
+#     - name: Set Kubeconfig
+#       uses: Azure/k8s-set-context@v1
+#       with:
+#         kubeconfig: ${{ secrets.KUBECONFIG }}
+
+#     - name: Apply Deployment Configuration
+#       run: |
+#         curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+#         ./kustomize build . | kubectl apply -f -
+
+
+name: Deploy to Kubernetes
 
 on:
   push:
-    branches:
-    - master
+    branches: [ master ]
 
-env:
-  GIT_SHA: ${{ github.sha }}
-  GIT_REF: ${{ github.ref }}
-  GIT_PAT: ${{ secrets.GIT_PAT }}
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
-
   deploy:
-    name: Deploy
+    name: Deploy to Kubernetes
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: Checkout the repository
-      uses: actions/checkout@main
-
-    - name: Set Kubeconfig
-      uses: Azure/k8s-set-context@v1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-
-    - name: Apply Deployment Configuration
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+    - name: Create kubeconfig
       run: |
-        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-        ./kustomize build . | kubectl apply -f -
+        mkdir ${HOME}/.kube
+        echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
+        cat ${HOME}/.kube/config
+    - name: Use context
+      run: kubectl config use-context 3line-main
+    - name: Deploy to K8s
+      run: |
+       curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+       ./kustomize build . | kubectl apply -f -
