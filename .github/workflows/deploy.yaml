@@ -54,6 +54,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
+        cluster: 3line-main
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -72,4 +73,3 @@ jobs:
        export KUBECONFIG=kubeconfig.yaml
        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
        ./kustomize build master | kubectl apply -f -
-       
