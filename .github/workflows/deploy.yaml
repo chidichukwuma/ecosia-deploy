@@ -65,17 +65,14 @@ jobs:
     #     mkdir ${HOME}/.kube
     #     echo ${{ secrets.KUBECONFIG }} | base64 --decode > kubeconfig.yaml
     #     echo ${{ secrets.KUBE_CONFIG }} | base64 --decode > ${HOME}/.kube/config
-    #     cat ${HOME}/.kube/config
-    - name: Setup KUBECONFIG
-      uses: vbem/kubeconfig4sa@v1
-      with:
-        server:     $SERVER
-        ca-base64:  ${{ secrets.K8S_CA_BASE64 }}
-        token:      ${{ secrets.K8S_SA_TOKEN }}
+    #     cat ${HOME}/.kube/config       
+    #  export KUBECONFIG=kubeconfig.yaml
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name 3line-main --region us-east-2
        
 
     - name: Deploy to K8s
       run: |
-       export KUBECONFIG=kubeconfig.yaml
+       kubectl apply -f eks/aws-auth.yaml
        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
        ./kustomize build master | kubectl apply -f -
