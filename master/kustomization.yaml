@@ -11,4 +11,4 @@ resources:
 - web/namespace.yaml
 images:
 - name: 265311748595.dkr.ecr.us-east-2.amazonaws.com/ecosia
-  newTag: 993a9cc7
+  newTag: 06d4cc15
