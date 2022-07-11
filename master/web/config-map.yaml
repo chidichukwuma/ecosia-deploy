@@ -4,3 +4,4 @@ metadata:
   name: web-config-map
 data:
   NONE: ""
+# this confgimap is not necessary tho
